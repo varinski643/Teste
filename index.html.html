@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tente Clicar!</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .tela {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .ativa {
+            display: flex;
+        }
+        h1 {
+            color: #1a1a1a;
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        p {
+            color: #777;
+            font-size: 15px;
+            margin-bottom: 28px;
+        }
+        button {
+            background-color: #2563eb;
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background-color 0.15s, padding 0.2s, font-size 0.2s;
+        }
+        button:hover {
+            background-color: #1d4ed8;
+        }
+        #contador, #contador2 {
+            color: #aaa;
+            font-size: 13px;
+            margin-top: 24px;
+        }
+        #mensagem, #mensagem2 {
+            color: #2563eb;
+            font-size: 15px;
+            margin-top: 16px;
+            font-weight: 500;
+            min-height: 20px;
+        }
+        .emoji-grande {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+        #botaoProximo {
+            margin-top: 24px;
+            background-color: #16a34a;
+        }
+        #botaoProximo:hover {
+            background-color: #15803d;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TELA 1: Jogo 1 -->
+    <div class="tela ativa" id="tela1">
+        <h1>Tente clicar no botão</h1>
+        <p>Aposto que você não consegue.</p>
+        <button id="meuBotao" onclick="mudarPosicao()">Clique aqui</button>
+        <div id="contador">Tentativas: 0</div>
+        <div id="mensagem"></div>
+    </div>
+
+    <!-- TELA 2: Vitória -->
+    <div class="tela" id="telaVitoria">
+        <div class="emoji-grande">🏆</div>
+        <h1>Uau, você conseguiu!</h1>
+        <p>20 tentativas... alguém tinha que fazer isso mesmo.</p>
+        <button id="botaoProximo" onclick="irParaJogo2()">Bora pro próximo desafio</button>
+    </div>
+
+    <!-- TELA 3: Jogo 2 -->
+    <div class="tela" id="tela2">
+        <h1>Rodada 2: agora fica pior</h1>
+        <p>Boa sorte com esse aqui.</p>
+        <button id="meuBotao2" onclick="mudarPosicao2()">Clique se conseguir</button>
+        <div id="contador2">Tentativas: 0</div>
+        <div id="mensagem2"></div>
+    </div>
+
+    <script>
+        // ---------- JOGO 1 ----------
+        let tentativas = 0;
+        const LIMITE_VITORIA = 20;
+
+        const mensagens = [
+            "Quase! 😏", "Hmm, tá difícil, né?", "Continua tentando...",
+            "Sério, desiste. 😂", "Impressionante persistência!",
+            "Ok, isso já é teimosia.", "Lenda urbana: ninguém nunca clicou.",
+            "Você é mais rápido que isso, vai!", "Ainda não? Nossa...",
+            "Tá suando frio já?", "Isso tá mexendo com seu ego, né?",
+            "Calma, respira.", "Já pensou em desistir da vida?",
+            "O botão está rindo de você agora.", "Nível: Frustração Máxima.",
+            "Vou fingir que não vi isso.", "Isso é pra hoje ainda?",
+            "Sua mira precisa de treino.", "O botão manda um abraço (de longe).",
+            "Recorde pessoal de tentativas inúteis!"
+        ];
+
+        function mudarPosicao() {
+            tentativas++;
+            document.getElementById("contador").textContent = "Tentativas: " + tentativas;
+
+            if (tentativas >= LIMITE_VITORIA) {
+                document.getElementById("tela1").classList.remove("ativa");
+                document.getElementById("telaVitoria").classList.add("ativa");
+                return;
+            }
+
+            const mensagemDiv = document.getElementById("mensagem");
+            if (tentativas >= 3) {
+                const indice = Math.min(tentativas - 3, mensagens.length - 1);
+                mensagemDiv.textContent = mensagens[indice];
+            }
+
+            const botao = document.getElementById("meuBotao");
+            botao.style.position = "fixed";
+
+            const escala = Math.max(0.4, 1 - tentativas * 0.05);
+            botao.style.padding = (14 * escala) + "px " + (28 * escala) + "px";
+            botao.style.fontSize = (15 * escala) + "px";
+
+            const maxX = window.innerWidth - botao.offsetWidth;
+            const maxY = window.innerHeight - botao.offsetHeight;
+            botao.style.left = (Math.random() * maxX) + "px";
+            botao.style.top = (Math.random() * maxY) + "px";
+        }
+
+        function irParaJogo2() {
+            document.getElementById("telaVitoria").classList.remove("ativa");
+            document.getElementById("tela2").classList.add("ativa");
+        }
+
+        // ---------- JOGO 2 (mais difícil, mais zoeira) ----------
+        let tentativas2 = 0;
+
+        const mensagens2 = [
+            "Ah não, de novo não. 🙃", "Achou que ia ser fácil?",
+            "Esse aqui é ainda mais rápido que você.",
+            "Tá treinando pra quê, hein?", "Nem chegou perto.",
+            "Isso já virou um hobby seu?", "O botão tá rindo (de novo).",
+            "Vai começar a chorar?", "Sua paciência é admirável e inútil.",
+            "Já contou pros seus amigos essa vergonha?",
+            "Tenta com a outra mão, quem sabe.",
+            "Isso não é sorte, é destino.",
+            "O botão só respeita quem desiste.",
+            "Nível: Lenda da Frustração.",
+            "Tá quase... mentira, nem perto.",
+            "Bora fazer outra coisa da vida?",
+            "Isso já é insistência patológica.",
+            "O botão criou vida própria só pra fugir de você.",
+            "Prêmio de consolação: nenhum.",
+            "Última chance de desistir com dignidade."
+        ];
+
+        function mudarPosicao2() {
+            tentativas2++;
+            document.getElementById("contador2").textContent = "Tentativas: " + tentativas2;
+
+            const mensagemDiv2 = document.getElementById("mensagem2");
+            if (tentativas2 >= 2) {
+                const indice = Math.min(tentativas2 - 2, mensagens2.length - 1);
+                mensagemDiv2.textContent = mensagens2[indice];
+            }
+
+            const botao2 = document.getElementById("meuBotao2");
+            botao2.style.position = "fixed";
+
+            // encolhe mais rápido que o jogo 1
+            const escala = Math.max(0.3, 1 - tentativas2 * 0.07);
+            botao2.style.padding = (14 * escala) + "px " + (28 * escala) + "px";
+            botao2.style.fontSize = (15 * escala) + "px";
+
+            const maxX = window.innerWidth - botao2.offsetWidth;
+            const maxY = window.innerHeight - botao2.offsetHeight;
+            botao2.style.left = (Math.random() * maxX) + "px";
+            botao2.style.top = (Math.random() * maxY) + "px";
+        }
+
+    </script>
+</body>
+</html>
